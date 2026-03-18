@@ -1,5 +1,7 @@
 # AI-Powered SEO Automation Workflow
 
+**Made by Arpit Kushwaha**
+
 This project is an automated, end-to-end system designed to collect real SEO-related data, analyze trends, and output clear, AI-driven recommendations using Python and local LLMs. It directly satisfies all requirements of the AI SEO Data Automation assignment.
 
 ## 🎯 Objectives Achieved
