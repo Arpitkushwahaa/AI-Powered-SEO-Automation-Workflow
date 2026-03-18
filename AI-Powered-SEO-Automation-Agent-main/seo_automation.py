@@ -2,6 +2,7 @@ import os
 import json
 import time
 import requests
+import pandas as pd
 from bs4 import BeautifulSoup
 from googlesearch import search
 
@@ -132,6 +133,37 @@ if __name__ == "__main__":
     with open(data_file, 'w', encoding='utf-8') as f:
         json.dump(seo_data, f, indent=4)
     print(f"\n[*] Raw JSON data exported to: {data_file}")
+    
+    # Step 1.5: Data Analysis with Pandas
+    print("\n>>> STEP 1.5: Data Analysis (Pandas)")
+    flat_data = []
+    for kw_data in seo_data:
+        keyword = kw_data.get('keyword', '')
+        for rank_data in kw_data.get('top_rankings_analyzed', []):
+            metrics = rank_data.get('on_page_metrics', {})
+            if metrics.get('status') == 'success':
+                flat_data.append({
+                    'keyword': keyword,
+                    'rank': rank_data.get('rank'),
+                    'word_count': metrics.get('word_count', 0),
+                    'h1_count': metrics.get('h1_count', 0),
+                    'h2_count': metrics.get('h2_count', 0)
+                })
+    
+    if flat_data:
+        df = pd.DataFrame(flat_data)
+        summary_stats = df.groupby('keyword').agg({
+            'word_count': 'mean',
+            'h1_count': 'mean',
+            'h2_count': 'mean'
+        }).reset_index()
+        print("\n[+] Pandas Analysis: Average Metrics per Keyword")
+        print(summary_stats.to_string(index=False))
+        # Exporting summary to CSV as required by best practices
+        summary_stats.to_csv("seo_trends_summary.csv", index=False)
+        print("\n[*] Summary trends exported to: seo_trends_summary.csv")
+    else:
+        print("[!] No successful data collected for Pandas analysis.")
     
     # Step 2: AI Generation with Local Model
     print("\n>>> STEP 2: AI Data Analysis (Local)")
