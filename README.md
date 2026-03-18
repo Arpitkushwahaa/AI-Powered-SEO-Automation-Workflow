@@ -8,7 +8,7 @@ This project is an automated, end-to-end system designed to collect real SEO-rel
 - **✔ Collects Real Data:** Fetches live search engine results (via Google Search) for target keywords and scrapes live on-page metrics (word count, title lengths, H1/H2 tags) from the top-ranking pages.
 - **✔ Analyzes Data (Pandas):** Processes the fetched structured data using `pandas` to calculate key metrics, averages, and group by keyword.
 - **✔ AI Summarization & Insights:** Pipes the analyzed data into a local LLM via Ollama to generate a clear summary and specific SEO recommendations.
-- **✔ End-to-End Automation:** A fully automated Python script runs the entire sequence seamlessly.
+- **✔ End-to-End Automation:** A fully automated **n8n workflow** stringing together Python scripts that run the entire sequence seamlessly.
 
 ## ⚙️ Data Flow & Architecture
 1. **Target Keywords Definition:** You specify your target search queries.
@@ -36,16 +36,17 @@ Navigate into the repository directory and install the necessary Python packages
 pip install -r requirements.txt
 ```
 
-### 3. Run the Automation
-To execute the end-to-end pipeline, simply run the Python orchestration script:
-```bash
-python seo_automation.py
-```
+### 3. Setup the n8n Workflow
+Because **n8n** is the preferred tool for orchestration:
+1. Ensure your local `n8n` server is running (`npm install -g n8n && n8n`).
+2. Go to your n8n dashboard (usually `http://localhost:5678`).
+3. Click **Add Workflow** > **Import from File**.
+4. Select the `n8n_workflow.json` from this repository.
+5. This automatically builds the scheduled workflow to trigger the data collection, calculate pandas metrics, and pass it to your local LLM on the interval you define.
 
 ## 📊 File Structure & Outputs
-- **`seo_automation.py`**: The main automation pipeline orchestrator.
+- **`n8n_workflow.json`**: The core orchestrator file (import into n8n).
+- **`seo_automation.py`**: The underlying processing engine triggered by the workflow.
 - **`seo_data.json`**: The raw scraped output in a readable JSON format.
 - **`seo_trends_summary.csv`**: Pandas-driven basic data extraction analyzing averages targets for the SERP.
 - **`seo_insights_report.md`**: Your automated AI consultant report detailing 3 specific SEO improvements based on real data.
-
-*Note: This solution prioritizes a pure Python script automation approach (as permitted in the assignment), avoiding the overhead of external tooling like n8n while perfectly fulfilling all core logic and AI requirements.*
